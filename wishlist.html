@@ -1,0 +1,130 @@
+<!DOCTYPE html><html>
+<head>
+<title>Wishlist</title>
+<link rel="stylesheet" href="style.css">
+</head><body><nav>
+<img src="image/logo.jpg" alt="Logo" class="logo"><div class="menu">
+<a href="index.html">Home</a>
+<a href="collection.html">Collection</a>
+<a href="custom.html">Tailoring</a>
+<a href="track.html">Track Order</a>
+<a href="contact.html">Contact</a>
+</div><a href="cart.html" class="cart">
+🛒 <span id="cart-count">0</span>
+</a><a href="wishlist.html" class="wishlist-box active">
+♡<span id="wishlist-count">0</span>
+</a></nav><div class="wishlist-header">
+<h1>❤️ My Wishlist</h1>
+<p>Your Favorite Fashion Picks</p>
+</div><div id="wishlist-items"></div><script>
+
+wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+let container = document.getElementById("wishlist-items");
+
+if(wishlist.length === 0){
+
+container.innerHTML = `
+<div class="empty-wishlist">
+
+❤️
+
+<h2>Your Wishlist is Empty</h2>
+
+<p>Save your favorite products here</p>
+
+<a href="collection.html" class="shop-btn">
+Explore Collection
+</a>
+
+</div>
+`;
+
+}else{
+
+wishlist.forEach((item,index)=>{
+
+container.innerHTML += `
+<div class="product-box">
+
+<img src="${item.image}" alt="${item.name}">
+
+<h3>${item.name}</h3>
+
+<p>₹${item.price}</p>
+
+<div class="wishlist-buttons">
+
+<button onclick="addWishlistToCart('${item.name}',${item.price},'${item.image}')">
+Add To Cart
+</button>
+
+<button onclick="buyNow('${item.name}',${item.price},'${item.image}')">
+Buy Now
+</button>
+
+<button onclick="removeWishlist(${index})">
+Remove
+</button>
+
+</div>
+
+</div>
+`;
+
+});
+
+}
+
+function addWishlistToCart(name,price,image){
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+let item = cart.find(p => p.name === name);
+
+if(item){
+item.qty++;
+}else{
+cart.push({
+name:name,
+price:price,
+image:image,
+qty:1
+});
+}
+
+localStorage.setItem("cart", JSON.stringify(cart));
+
+alert("Added To Cart 🛒");
+
+location.reload();
+
+}
+
+function buyNow(name,price,image){
+
+let cart = [{
+name:name,
+price:price,
+image:image,
+qty:1
+}];
+
+localStorage.setItem("cart", JSON.stringify(cart));
+
+window.location.href = "cart.html";
+
+}
+
+function removeWishlist(index){
+
+wishlist.splice(index,1);
+
+localStorage.setItem("wishlist", JSON.stringify(wishlist));
+
+location.reload();
+
+}
+
+</script><script src="script.js"></script></body>
+</html>

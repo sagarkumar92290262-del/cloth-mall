@@ -1,0 +1,158 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Cart - Maruanlal NXT</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+<img src="image/logo.jpg" alt="Logo" class="logo">
+
+<div class="menu">
+<a href="index.html">Home</a>
+<a href="collection.html">Collection</a>
+<a href="custom.html">Tailoring</a>
+<a href="track.html">Track Order</a>
+<a href="contact.html">Contact</a>
+</div>
+
+<a href="cart.html" class="cart">
+🛒 <span id="cart-count">0</span>
+</a>
+
+<a href="wishlist.html" class="wishlist-box">❤️</a>
+</nav>
+
+<!-- HEADER -->
+<div class="wishlist-header">
+<h1>🛒 Your Shopping Cart</h1>
+<p>Review your selected items</p>
+</div>
+
+<!-- CART ITEMS -->
+<div id="cart-items"></div>
+
+<!-- EMPTY CART -->
+<div id="empty-cart" class="empty-wishlist" style="display:none;">
+<h2>Your Cart is Empty</h2>
+<p>Go and explore amazing products</p>
+<a href="collection.html" class="shop-btn">Explore Collection</a>
+</div>
+
+<!-- SUMMARY -->
+<div class="cart-summary">
+<h2 id="total-price">Total: ₹0</h2>
+<button class="checkout-btn" onclick="checkout()">
+Proceed To Pay
+</button>
+</div>
+
+<script>
+
+// GET CART
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+let container = document.getElementById("cart-items");
+let emptyCart = document.getElementById("empty-cart");
+
+let total = 0;
+
+// SHOW CART
+function renderCart() {
+
+container.innerHTML = "";
+total = 0;
+
+if(cart.length === 0){
+emptyCart.style.display = "block";
+return;
+}
+
+emptyCart.style.display = "none";
+
+cart.forEach((item,index)=>{
+
+total += item.price * item.qty;
+
+container.innerHTML += `
+<div class="product-box">
+
+<img src="${item.image}">
+<h3>${item.name}</h3>
+<p>Price: ₹${item.price}</p>
+<p>Quantity: ${item.qty}</p>
+
+<button onclick="addOne(${index})">➕ Add</button>
+<button onclick="removeItem(${index})">➖ Remove</button>
+
+</div>
+`;
+
+});
+
+document.getElementById("total-price").innerText = "Total: ₹" + total;
+
+}
+
+// ADD ONE
+function addOne(index){
+cart[index].qty++;
+saveCart();
+}
+
+// REMOVE ONE
+function removeItem(index){
+if(cart[index].qty > 1){
+cart[index].qty--;
+}else{
+cart.splice(index,1);
+}
+saveCart();
+}
+
+// SAVE CART
+function saveCart(){
+localStorage.setItem("cart", JSON.stringify(cart));
+renderCart();
+updateCartCount();
+}
+
+// CHECKOUT
+function checkout(){
+if(cart.length === 0){
+alert("Cart is empty!");
+return;
+}
+alert("Proceeding to payment...");
+}
+
+// CART COUNT
+function updateCartCount(){
+
+let currentCart = JSON.parse(localStorage.getItem("cart")) || [];
+let count = 0;
+
+currentCart.forEach(item=>{
+count += item.qty;
+});
+
+let cartCounter = document.getElementById("cart-count");
+if(cartCounter){
+cartCounter.innerText = count;
+}
+
+}
+
+// INIT
+renderCart();
+updateCartCount();
+
+</script>
+<script src="script.js"></script>
+</body>
+</html>
